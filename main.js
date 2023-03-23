@@ -113,9 +113,67 @@
             });
         });
         // end card pagination 
+        
+        // filter by post status 
+        $("body").delegate('.post_status li', 'click', function () {
+            var bp_post_status = $(this).attr('bp_post_status');
+            var get_site_url = $(".watch_site_url").attr('setup_site_url');
+            var get_luser_id = $(".get_luser_id").val();
+            var origin_site_url = $(location).attr('origin')
+            window.history.pushState("", "", origin_site_url + '/watch/alimentazione-articoli/');
 
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'usr_filter_by_status',
+                    bp_post_status: bp_post_status,
+                    get_site_url: get_site_url,
+                    get_luser_id: get_luser_id,
+                },
+                type: 'post',
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data.results.error == true) {
+                        $(".dashbrd_post_grid_items").html(data.results.message);
+                    } else {
+                        $(".dashbrd_post_grid_items").html(data.results.post_tems);
+                    }
+                    $(".load_cat_ajax_pagi").html(data.results.pagination);
+                },
+            });
+        });
+        // end filter by post status 
       
       
+        $("body").delegate('.usr_status_pagi .page-numbers', 'click', function (event) {
+            event.preventDefault();
+            var page = $(this).attr('href');
+            var get_site_url = $(".watch_site_url").attr('setup_site_url');
+            var post_status_name = $(".post_status li.active").attr('bp_post_status');
+            var get_luser_id = $(".get_luser_id").val();
+            window.history.pushState("", "", page);
+            $.ajax({
+                url: url,
+                data: {
+                    action: 'usr_status_pagi',
+                    page_url: page,
+                    get_site_url: get_site_url,
+                    post_status_name: post_status_name,
+                    get_luser_id: get_luser_id,
+                },
+                type: 'post',
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data.results.error == true) {
+                        $(".dashbrd_post_grid_items").html(data.results.message);
+                    } else {
+                        $(".dashbrd_post_grid_items").html(data.results.post_tems);
+                    }
+                    $(".load_cat_ajax_pagi").html(data.results.pagination);
+                },
+            });
+        });
+        // start blog post cat filter 
       
           });
 })(jQuery)
